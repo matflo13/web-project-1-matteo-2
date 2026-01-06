@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mini Geometry Dash</title>
+    <style>
+      body {
+        margin: 0;
+        background: #111;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: white;
+        font-family: Arial, sans-serif;
+      }
+      canvas {
+        background: #1e1e1e;
+        border: 2px solid #444;
+      }
+      .hint {
+        position: absolute;
+        top: 10px;
+        font-size: 14px;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hint">Hold SPACE or mouse to jump repeatedly</div>
+    <canvas id="game" width="800" height="300"></canvas>
+
+    <script>
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+
+      // ---- CONSTANTS ----
+      const GRAVITY = 0.3;
+      const JUMP_FORCE = -7;
+      const GROUND_Y = 260;
+      let SPEED = 3.5;
+
+      // ---- GAME STATE ----
+      let player, spikes, blocks, gameOver, spawnX, distance;
+
+      // ---- RESET ----
+      function resetGame() {
+        player = {
+          x: 100,
+          y: GROUND_Y - 30,
+          size: 30,
+          velY: 0,
+          onGround: false,
+          rotation: 0,
+        };
+
+        spikes = [];
+        blocks = [];
+        gameOver = false;
+
+        spawnX = canvas.width;
+        distance = 0;
+      }
+
+      // ---- INPUT ----
+      let jumpHeld = false;
+
+      document.addEventListener("keydown", (e) => {
+        if (e.code === "Space") jumpHeld = true;
+      });
+      document.addEventListener("keyup", (e) => {
+        if (e.code === "Space") jumpHeld = false;
+      });
+      document.addEventListener("mousedown", () => (jumpHeld = true));
+      document.addEventListener("mouseup", () => (jumpHeld = false));
+
+      // ---- SPAWNERS ----
+      function spawnSpikeCluster(x) {
+        const clusterSize =
+          Math.random() < 0.3 ? 3 : Math.random() < 0.5 ? 2 : 1;
+        for (let i = 0; i < clusterSize; i++) {
+          spikes.push({
+            x: x + i * 30,
+            y: GROUND_Y - 30,
+            size: 30,
+          });
+        }
+      }
+
+      function spawnBlock() {
+        blocks.push({
+          x: spawnX,
+          y: 180 + Math.random() * 60,
+          width: 80,
+          height: 20,
+        });
+      }
+
+      // ---- UPDATE ----
+      function update() {
+        if (gameOver) return;
+
+        distance++;
+        if (distance % 1000 === 0) SPEED += 0.3;
+
+        // Physics
+        player.velY += GRAVITY;
+        player.y += player.velY;
+        player.onGround = false;
+
+        // Move world
+        spikes.forEach((s) => (s.x -= SPEED));
+        blocks.forEach((b) => (b.x -= SPEED));
+
+        // Ground collision
+        if (player.y + player.size >= GROUND_Y) {
+          player.y = GROUND_Y - player.size;
+          player.velY = 0;
+          player.onGround = true;
+        }
+
+        // Block collision (landing)
+        blocks.forEach((b) => {
+          if (
+            player.x + player.size > b.x &&
+            player.x < b.x + b.width &&
+            player.y + player.size >= b.y &&
+            player.y + player.size <= b.y + b.height &&
+            player.velY >= 0
+          ) {
+            player.y = b.y - player.size;
+            player.velY = 0;
+            player.onGround = true;
+          }
+        });
+
+        // ---- AUTO JUMP WHEN HOLDING ----
+        if (jumpHeld && player.onGround) {
+          player.velY = JUMP_FORCE;
+          player.onGround = false;
+        }
+
+        // Rotation (airborne only)
+        if (!player.onGround) {
+          player.rotation += 0.075;
+        } else {
+          player.rotation = 0;
+        }
+
+        // Collisions
+        spikes.forEach((s) => {
+          if (
+            player.x < s.x + s.size &&
+            player.x + player.size > s.x &&
+            player.y < s.y + s.size &&
+            player.y + player.size > s.y
+          ) {
+            gameOver = true;
+          }
+        });
+
+        // Remove off-screen
+        spikes = spikes.filter((s) => s.x + s.size > 0);
+        blocks = blocks.filter((b) => b.x + b.width > 0);
+
+        // Spawn new objects
+        if (spawnX < canvas.width + 400) {
+          spawnX += 200 + Math.random() * 200;
+
+          if (Math.random() < 0.6) spawnSpikeCluster(spawnX);
+          if (Math.random() < 0.4) spawnBlock();
+        }
+
+        spawnX -= SPEED;
+      }
+
+      // ---- DRAW ----
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Ground
+        ctx.fillStyle = "#333";
+        ctx.fillRect(0, GROUND_Y, canvas.width, 5);
+
+        // Player
+        ctx.save();
+        ctx.translate(player.x + player.size / 2, player.y + player.size / 2);
+        ctx.rotate(player.rotation);
+        ctx.fillStyle = "#00ffcc";
+        ctx.fillRect(
+          -player.size / 2,
+          -player.size / 2,
+          player.size,
+          player.size
+        );
+        ctx.restore();
+
+        // Blocks
+        ctx.fillStyle = "#8888ff";
+        blocks.forEach((b) => {
+          ctx.fillRect(b.x, b.y, b.width, b.height);
+        });
+
+        // Spikes
+        ctx.fillStyle = "#ff4444";
+        spikes.forEach((s) => {
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y + s.size);
+          ctx.lineTo(s.x + s.size / 2, s.y);
+          ctx.lineTo(s.x + s.size, s.y + s.size);
+          ctx.closePath();
+          ctx.fill();
+        });
+
+        // Game Over
+        if (gameOver) {
+          ctx.fillStyle = "white";
+          ctx.font = "32px Arial";
+          ctx.fillText("Game Over", 320, 150);
+        }
+      }
+
+      // ---- LOOP ----
+      function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      resetGame();
+      loop();
+    </script>
+  </body>
+</html>
