@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Clash Royale Mini Clone</title>
+
+    <style>
+      body {
+        margin: 0;
+        background: #1b4965;
+        font-family: Arial;
+        user-select: none;
+      }
+
+      #game {
+        width: 900px;
+        margin: 20px auto;
+        background: #62b6cb;
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      #arena {
+        position: relative;
+        height: 450px;
+        background: #cae9ff;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      #river {
+        position: absolute;
+        top: 200px;
+        width: 100%;
+        height: 50px;
+        background: #0077b6;
+      }
+
+      .bridge {
+        position: absolute;
+        width: 80px;
+        height: 50px;
+        background: #8d5524;
+      }
+
+      #bridgeLeft {
+        left: 220px;
+        top: 200px;
+      }
+      #bridgeRight {
+        right: 220px;
+        top: 200px;
+      }
+
+      .tower {
+        position: absolute;
+        width: 60px;
+        height: 80px;
+        background: #343a40;
+        color: white;
+        text-align: center;
+        line-height: 80px;
+        border-radius: 6px;
+        font-weight: bold;
+      }
+
+      .king {
+        width: 70px;
+        height: 90px;
+        line-height: 90px;
+      }
+
+      #p_left {
+        left: 150px;
+        top: 330px;
+      }
+      #p_right {
+        right: 150px;
+        top: 330px;
+      }
+      #p_king {
+        left: 415px;
+        top: 360px;
+      }
+
+      #e_left {
+        left: 150px;
+        top: 40px;
+      }
+      #e_right {
+        right: 150px;
+        top: 40px;
+      }
+      #e_king {
+        left: 415px;
+        top: 10px;
+      }
+
+      .troop {
+        position: absolute;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 28px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .player {
+        background: #3a86ff;
+      }
+      .enemy {
+        background: #e63946;
+      }
+
+      #ui {
+        margin-top: 10px;
+      }
+
+      #elixir {
+        margin-bottom: 6px;
+        font-size: 18px;
+      }
+
+      .card {
+        display: inline-block;
+        width: 100px;
+        padding: 10px;
+        background: #003049;
+        color: white;
+        border-radius: 8px;
+        text-align: center;
+        cursor: grab;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="game">
+      <div id="arena">
+        <div id="river"></div>
+        <div id="bridgeLeft" class="bridge"></div>
+        <div id="bridgeRight" class="bridge"></div>
+
+        <!-- Enemy towers -->
+        <div id="e_left" class="tower">10</div>
+        <div id="e_right" class="tower">10</div>
+        <div id="e_king" class="tower king">15</div>
+
+        <!-- Player towers -->
+        <div id="p_left" class="tower">10</div>
+        <div id="p_right" class="tower">10</div>
+        <div id="p_king" class="tower king">15</div>
+      </div>
+
+      <div id="ui">
+        <div id="elixir">Elixir: 5</div>
+        <div class="card" draggable="true" id="troopCard">Troop (3)</div>
+      </div>
+    </div>
+
+    <script>
+      let elixir = 5;
+      let troops = [];
+
+      const arena = document.getElementById("arena");
+      const elixirText = document.getElementById("elixir");
+
+      function updateElixir() {
+        elixirText.textContent = "Elixir: " + elixir;
+      }
+
+      setInterval(() => {
+        if (elixir < 10) {
+          elixir++;
+          updateElixir();
+        }
+      }, 1000);
+
+      // Drag & drop
+      const card = document.getElementById("troopCard");
+
+      card.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text", "troop");
+      });
+
+      arena.addEventListener("dragover", (e) => e.preventDefault());
+
+      arena.addEventListener("drop", (e) => {
+        e.preventDefault();
+        if (elixir < 3) return;
+        if (e.offsetY < 250) return;
+
+        elixir -= 3;
+        updateElixir();
+        spawnTroop(e.offsetX, e.offsetY, true);
+      });
+
+      function spawnTroop(x, y, isPlayer) {
+        const troop = document.createElement("div");
+        troop.className = "troop " + (isPlayer ? "player" : "enemy");
+        troop.style.left = x + "px";
+        troop.style.top = y + "px";
+        troop.hp = 10;
+        troop.speed = isPlayer ? -1 : 1;
+        troop.isFighting = false;
+        arena.appendChild(troop);
+        troops.push(troop);
+      }
+
+      // Enemy AI
+      setInterval(() => {
+        spawnTroop(450, 80, false);
+      }, 3500);
+
+      // Game loop
+      setInterval(() => {
+        troops.forEach((t, i) => {
+          if (!t.isFighting) {
+            let y = parseInt(t.style.top);
+            y += t.speed;
+            t.style.top = y + "px";
+          }
+
+          troops.forEach((other) => {
+            if (t === other) return;
+            if (t.className === other.className) return;
+
+            const dx = Math.abs(
+              parseInt(t.style.left) - parseInt(other.style.left)
+            );
+            const dy = Math.abs(
+              parseInt(t.style.top) - parseInt(other.style.top)
+            );
+
+            if (dx < 25 && dy < 25) {
+              t.isFighting = true;
+              other.isFighting = true;
+
+              t.hp--;
+              other.hp--;
+
+              if (t.hp <= 0) {
+                t.remove();
+                troops.splice(troops.indexOf(t), 1);
+              }
+
+              if (other.hp <= 0) {
+                other.remove();
+                troops.splice(troops.indexOf(other), 1);
+              }
+            }
+          });
+
+          if (parseInt(t.style.top) < 20 && t.classList.contains("player")) {
+            document.getElementById("e_king").textContent--;
+            t.remove();
+            troops.splice(i, 1);
+          }
+
+          if (parseInt(t.style.top) > 380 && t.classList.contains("enemy")) {
+            document.getElementById("p_king").textContent--;
+            t.remove();
+            troops.splice(i, 1);
+          }
+        });
+      }, 40);
+    </script>
+  </body>
+</html>
