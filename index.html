@@ -13,20 +13,25 @@
     <title>Best NBA Teams</title>
   </head>
   <body>
+    <!-- 
+      This is the header of the website. It holds the main titles 
+      and navigation links, and it appears the same on every page.
+    -->
     <header>
       <h1>
         <u>Best NBA Teams</u>
       </h1>
       <h2>Who is the best NBA team of all time?</h2>
+      <!--
+        This is a navigation menu for the website's different pages.
+      -->
       <nav>
-        <!--
-          This is a navigation menu for the website's different pages.
-        -->
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="bulls.html">1995-96 Chicago Bulls</a></li>
           <li><a href="warriors.html">2015-16 Golden State Warriors</a></li>
           <li><a href="lakers.html">1971-72 Los Angeles Lakers</a></li>
+          <li><a href="forms.html">Create an Account</a></li>
         </ul>
       </nav>
     </header>
@@ -37,6 +42,9 @@
           There have been many great NBA teams throughout history, but a few
           stand out as the best of all time. Here are some of the most notable
           ones:
+          <!--
+            I used text decorations to bold the team names.
+          -->
           <b> 1995-96 Chicago Bulls, </b>
           <b> 2015-16 Golden State Warriors, </b>
           and
@@ -46,6 +54,11 @@
           lasting legacy in NBA history.
         </p>
       </section>
+
+      <!--
+        This figure displays an image of the starting lineup of the 1995-96 Chicago Bulls.
+      -->
+
       <figure>
         <img
           src="images/bulls-championship-lineup.jpg"
@@ -72,13 +85,49 @@
           referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen></iframe>
       </section>
+
+      <!--
+        This section adds a table to help compare the teams, with their records and season outcomes included.
+        I added the <thead> and <tbody> tags since I saw them on w3schools and they help with organization.
+      -->
+
+      <section>
+        <h3>Table of Comparisons</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>Record</th>
+              <th>End Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1995-96 Chicago Bulls</td>
+              <td>72-10</td>
+              <td>Won NBA Championship</td>
+            </tr>
+            <tr>
+              <td>2015-16 Golden State Warriors</td>
+              <td>73-9</td>
+              <td>Lost NBA Championship</td>
+            </tr>
+            <tr>
+              <td>1971-72 Los Angeles Lakers</td>
+              <td>69-13</td>
+              <td>Won NBA Championship</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
       <section>
         <h3>Conclusion</h3>
         <p>
           While opinions may vary on which team is the absolute best, these
           teams are known as the greatest in NBA history because of their
           amazing achievements, dominant performances, and lasting impact on the
-          entire game of basketball.
+          entire game of basketball. All three teams left a legacy that
+          continues to influence the next generations of players and fans.
         </p>
       </section>
     </main>
