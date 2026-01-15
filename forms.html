@@ -38,27 +38,141 @@
     <main>
       <section>
         <h2>Create Your Team</h2>
-        <form action="#" method="get">
-          <label for="city">City:</label><br />
-          <input type="text" id="city" name="city" required /><br /><br />
+        <!--
+          This form lets you create your own basketball team by 
+          filling out various fields. The get method is used since 
+          we haven't learned backend development yet, and for 
+          action, I did some research and found out using
+          action="index.html" would redirect the user back to the 
+          homepage after submitting the form.
+        -->
+        <form action="index.html" method="get">
+          <fieldset>
+            <!-- 
+              This fieldset lets you choose the name and location of your team.
+            -->
+            <legend>Team Identity</legend>
+            <!-- The text input allows the user to enter text about the city, team name, and abbreviation of your team. -->
+            <label for="city">City:</label><br />
+            <input type="text" id="city" name="city" required /><br /><br />
 
-          <label for="team-name">Team Name:</label><br />
-          <input
-            type="text"
-            id="team-name"
-            name="team-name"
-            required /><br /><br />
+            <label for="team-name">Team Name:</label><br />
+            <input
+              type="text"
+              id="team-name"
+              name="team-name"
+              required /><br /><br />
 
-          <label for="abbreviation">Abbreviation:</label><br />
-          <input
-            type="text"
-            id="abbreviation"
-            name="abbreviation"
-            required /><br /><br />
+            <label for="abbreviation">Abbreviation:</label><br />
+            <input
+              type="text"
+              id="abbreviation"
+              name="abbreviation"
+              required /><br /><br />
+          </fieldset>
 
+          <fieldset>
+            <!-- 
+              I used color inputs to choose the team's colors. 
+              This is one we didn't cover in class. 
+            -->
+            <legend>Team Colors</legend>
+            <label for="primary-color">Primary Color:</label><br />
+            <input
+              type="color"
+              id="primary-color"
+              name="primary-color"
+              value="#ffffff"
+              required /><br /><br />
+            <label for="secondary-color">Secondary Color:</label><br />
+            <input
+              type="color"
+              id="secondary-color"
+              name="secondary-color"
+              value="#ffffff"
+              required /><br /><br />
+            <label for="tertiary-color">Tertiary Color:</label><br />
+            <input
+              type="color"
+              id="tertiary-color"
+              name="tertiary-color"
+              value="#ffffff"
+              required /><br /><br />
+          </fieldset>
+          <fieldset>
+            <legend>Mascot & Logo</legend>
+            <label for="mascot-name">Mascot Name:</label><br />
+            <input
+              type="text"
+              id="mascot-name"
+              name="mascot-name"
+              required /><br /><br />
+
+            <!-- 
+              Here you paste the URL for the picture of your mascot.
+            -->
+            <label for="mascot-image">Mascot Image URL:</label><br />
+            <input
+              type="url"
+              id="mascot-image"
+              name="mascot-image"
+              required /><br /><br />
+
+            <!-- 
+              Same thing for your logo.
+            -->
+            <label for="logo-image">Logo Image URL:</label><br />
+            <input
+              type="url"
+              id="logo-image"
+              name="logo-image"
+              required /><br /><br />
+          </fieldset>
+          <fieldset>
+            <!-- 
+              This fieldset lets you choose which league your team plays in.
+            -->
+            <legend>Competition / League</legend>
+            <input type="radio" id="nba" name="league" value="nba" required />
+            <label for="nba">NBA</label><br />
+            <input
+              type="radio"
+              id="euroleague"
+              name="league"
+              value="euroleague"
+              required />
+            <label for="euroleague">EuroLeague</label><br />
+            <input type="radio" id="fiba" name="league" value="fiba" required />
+            <label for="fiba">FIBA</label><br />
+          </fieldset>
+
+          <fieldset>
+            <!--
+              I used select tags to let you choose the roster type and playstyle.
+            -->
+            <legend>Team Composition / Playstyle</legend>
+            <label for="roster-type">Roster Type:</label><br />
+            <select id="roster-type" name="roster-type" required>
+              <option value="balanced">Balanced</option>
+              <option value="guard-focused">Guard-Focused</option>
+              <option value="wing-centered">Wing-Centered</option>
+              <option value="big-oriented">Big-Oriented</option></select
+            ><br /><br />
+            <label for="playstyle">Playstyle:</label><br />
+            <select id="playstyle" name="playstyle" required>
+              <option value="Pace and Space">Pace & Space</option>
+              <option value="defensive-oriented">Defensive-Oriented</option>
+              <option value="three-point-heavy">Three-Point Heavy</option>
+              <option value="inside-out">Inside-Out</option>
+            </select>
+          </fieldset>
+          <br />
           <input type="submit" value="Create Team" />
         </form>
       </section>
     </main>
+    <footer>
+      <p>&#169; Matteo Basketball Productions. No rights reserved.</p>
+    </footer>
   </body>
 </html>
