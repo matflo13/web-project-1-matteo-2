@@ -131,6 +131,11 @@
           <fieldset>
             <!-- 
               This fieldset lets you choose which league your team plays in.
+              Each option is represented by a radio button. For radio buttons,
+              the name attribute must be the same for all options in the group
+              so that only one option can be chosen at a time. However, the id 
+              attribute is unique for each option to be able to link the label to
+              the right radio button.
             -->
             <legend>Competition / League</legend>
             <input type="radio" id="nba" name="league" value="nba" required />
@@ -160,7 +165,7 @@
             ><br /><br />
             <label for="playstyle">Playstyle:</label><br />
             <select id="playstyle" name="playstyle" required>
-              <option value="Pace and Space">Pace & Space</option>
+              <option value="motion">Motion</option>
               <option value="defensive-oriented">Defensive-Oriented</option>
               <option value="three-point-heavy">Three-Point Heavy</option>
               <option value="inside-out">Inside-Out</option>
